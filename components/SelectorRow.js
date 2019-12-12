@@ -24,24 +24,34 @@ const selectableStyle = <style>{`
 .name {
 
 }
+
+.selected {
+  background: #4d8cf4;
+}
 `}</style>;
 
 const Selectable = (props) => {
-  return <div {...props} className="selectable">
+  let currClassName = 'selectable';
+  if (props.selected) { currClassName += ' selected'; }
+  return <div {...props} className={currClassName}>
     <div className="name">
       {props.name}
     </div>
     {selectableStyle}
   </div>
-
 }
 
 const SelectorRow = (props) => {
-  let { setPickedTime } = props;
+  let { setPickedTimeIdx, pickedTimeIdx, data } = props;
+
+  let renderSelectables = (data) => {
+    return data.map(({ name, ms }, i) => {
+      return <Selectable selected={pickedTimeIdx === i} key={i} onClick={() => setPickedTimeIdx(i)} name={name} />
+    });
+  };
+
   return <div className="selector-row">
-      <Selectable onClick={() => setPickedTime(3000)} name="3s"/>
-      <Selectable onClick={() => setPickedTime(5000)} name="5s"/>
-      <Selectable onClick={() => setPickedTime(7000)} name="7s"/>
+      { renderSelectables(data) }
     { selectorRowStyle }
   </div>;
 

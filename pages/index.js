@@ -24,12 +24,20 @@ const appStyle = <style jsx="true" global>{`
 `}  
 </style>
 
+
+const DATA = [
+  { name: '3s', ms: 3000 },
+  { name: '7s', ms: 7000 },
+  { name: '10s', ms: 10000 },
+];
+
+
 const Index = () => {
-  let [ pickedTime, setPickedTime] = useState(5000);
+  let [ pickedTimeIdx, setPickedTimeIdx ] = useState(0);
 
   return <div className="app">
-      <SelectorRow setPickedTime = {setPickedTime}/>
-      <TappableTimer pickedTime={pickedTime} />
+      <SelectorRow pickedTimeIdx={pickedTimeIdx} setPickedTimeIdx={setPickedTimeIdx} data={DATA} />
+      <TappableTimer pickedTime={DATA[pickedTimeIdx].ms} />
       { appStyle }
     </div>
   };

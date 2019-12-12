@@ -48,7 +48,7 @@ function useTimer(ms) {
 
   return {
     msLeft,
-    start: start,
+    start,
     pause,
     reset,
   };
