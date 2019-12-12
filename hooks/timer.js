@@ -1,15 +1,17 @@
 import { useState, useRef, useEffect } from 'react';
 
-function useTimer() {
-  let [ expireAt, setExpireAt ] = useState(Date.now() + 5000);
+function useTimer(ms) {
+  let [ expireAt, setExpireAt ] = useState();
   let intervalRef = useRef();
-  let [ msLeft, setMsLeft ] = useState(5000);
+  let [ msLeft, setMsLeft ] = useState(ms);
 
+  useEffect(() => setMsLeft(ms), [ms])
 
-  let start = (newExpire) => {
+  let start = () => {
+    let newExpire = Date.now() + ms;
     if (!intervalRef.current) {
-      setExpireAt(Date.now() + 5000);
-      setMsLeft(5000);
+      setExpireAt(Date.now() + ms);
+      setMsLeft(ms);
       intervalRef.current = setInterval(() => {
         setMsLeft(prevMsLeft => {
           // console.log('expireAt:', newExpire);
@@ -19,7 +21,7 @@ function useTimer() {
             intervalRef.current = undefined;
             return prevMsLeft;
           } else {
-            return newExpire - Date.now();
+            return Math.max(newExpire - Date.now(), 0);
           }
         });
       }, 50);
@@ -32,12 +34,12 @@ function useTimer() {
       intervalRef.current = undefined;
     } else {
       console.log('unpausing:', msLeft);
-      start(Date.now() + msLeft);
+      start();
     }
   }
   
   let reset = () => {
-    setMsLeft(5000);
+    setMsLeft(ms);
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = undefined;
