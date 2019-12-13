@@ -19,6 +19,7 @@ const selectableStyle = <style>{`
   align-content: center;
   align-items: center;
   justify-content: center;
+  font-size: 50px;
 }
 
 .name {

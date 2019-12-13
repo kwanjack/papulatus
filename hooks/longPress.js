@@ -1,24 +1,38 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
-export default function useLongPress(callback = ()=>{},
-  clickCallback=()=>{}, onClickStart=()=>{}, ms = 300) {
+export default function useLongPress({
+    onLongPress,
+    onShortPress,
+    onClickStart,
+    onLongPressCancel,
+    onLongPressGuaranteed
+  }, resetTime, longPressGuaranteedTime) {
   const [startLongPress, setStartLongPress] = useState(false);
 
   const [clickStart, setClickStart] = useState();
 
+  const longPressStartId = useRef();
+
   useEffect(() => {
     let timerId;
+
     if (startLongPress) {
       onClickStart();
+      longPressStartId.current = setTimeout(onLongPressGuaranteed, longPressGuaranteedTime);
+      console.log('longPressId set:', longPressStartId.current);
+
       timerId = setTimeout(() => {
         console.log('long press!');
-        callback();
+        onLongPress();
         setClickStart(Infinity);
-      }, ms);
+      }, resetTime);
+
       setClickStart(Date.now());
     } else {
-      if (Date.now() > clickStart) { console.log('click!'); clickCallback(); }
+      if (Date.now() > clickStart) { console.log('click!'); onShortPress(); }
       clearTimeout(timerId);
+      console.log('clear longPressStartId:', longPressStartId.current);clearTimeout(longPressStartId.current);
+      onLongPressCancel();
     }
 
     return () => {
