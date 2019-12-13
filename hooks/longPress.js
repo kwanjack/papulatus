@@ -19,7 +19,6 @@ export default function useLongPress({
     if (startLongPress) {
       onClickStart();
       longPressStartId.current = setTimeout(onLongPressGuaranteed, longPressGuaranteedTime);
-      console.log('longPressId set:', longPressStartId.current);
 
       timerId = setTimeout(() => {
         console.log('long press!');
@@ -29,9 +28,9 @@ export default function useLongPress({
 
       setClickStart(Date.now());
     } else {
-      if (Date.now() > clickStart) { console.log('click!'); onShortPress(); }
+      if (Date.now() > clickStart) { onShortPress(); }
       clearTimeout(timerId);
-      console.log('clear longPressStartId:', longPressStartId.current);clearTimeout(longPressStartId.current);
+      clearTimeout(longPressStartId.current);
       onLongPressCancel();
     }
 
