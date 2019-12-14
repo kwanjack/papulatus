@@ -2,7 +2,7 @@
 const selectorRowStyle = <style>{`
 .selector-row {
   width: 100vw;
-  height: 30vh;
+  height: 20vh;
   background: #2a2b2d;
   display: flex;
   flex-direction: row;
@@ -11,8 +11,8 @@ const selectorRowStyle = <style>{`
 
 const selectableStyle = <style>{`
 .selectable {
-  width: 30vh;
-  height: 30vh;
+  width: 20vh;
+  height: 20vh;
   background: #2a2b2d;
   display: flex;
   flex-direction: column;

@@ -1,7 +1,7 @@
 export const tappableTimerStyle = <style>{`
 .tappable-timer {
   width: 100%;
-  height: 70vh;
+  height: 80vh;
   background: #202123;
   display: flex;
   flex-direction: column;
@@ -21,10 +21,24 @@ export const tappableTimerStyle = <style>{`
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 50;
 }
 
 .time-left {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  vertical-align: text-bottom;
+}
 
+.time-quantity {
+  vertical-align: text-bottom;
+}
+
+.time-unit {
+  font-size: 30px;
+  vertical-align: text-bottom;
+  margin-right: 10px;
 }
 
 .progress-indicator {
@@ -37,7 +51,7 @@ export const tappableTimerStyle = <style>{`
 }
 
 .reset-indicator-container {
-  height: 20px;
+  height: 40px;
   width: 100vw;
   position: absolute;
   top: 0;
@@ -60,6 +74,21 @@ export const tappableTimerStyle = <style>{`
   font-size: 15px;
   height: 100%;
   color: black;
+}
+
+.status-indicator {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  font-size: 50px;
+  z-index: 30;
+}
+
+
+.status-indicator path{
+
 }
 
 `}</style>;

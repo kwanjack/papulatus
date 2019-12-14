@@ -15,13 +15,11 @@ export default function useLongPress({
 
   useEffect(() => {
     let timerId;
-
     if (startLongPress) {
       onClickStart();
       longPressStartId.current = setTimeout(onLongPressGuaranteed, longPressGuaranteedTime);
 
       timerId = setTimeout(() => {
-        console.log('long press!');
         onLongPress();
         setClickStart(Infinity);
       }, resetTime);
@@ -40,10 +38,10 @@ export default function useLongPress({
   }, [startLongPress]);
 
   return {
-    onMouseDown: () => setStartLongPress(true),
-    onMouseUp: () => setStartLongPress(false),
-    onMouseLeave: () => setStartLongPress(false),
-    onTouchStart: () => setStartLongPress(true),
-    onTouchEnd: () => setStartLongPress(false),
+    onMouseDown: () => { console.log('onMouseDown'); setStartLongPress(true); },
+    onMouseUp: () => { console.log('onMouseUp'); setStartLongPress(false); },
+    onMouseLeave: () => { console.log('onMouseLeave'); setStartLongPress(false); },
+    onTouchStart: () => { console.log('onTouchStart'); setStartLongPress(true); },
+    onTouchEnd: () => { console.log('onTouchEnd'); setStartLongPress(false); },
   };
 }

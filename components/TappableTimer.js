@@ -1,11 +1,35 @@
 import useTimer from '../hooks/timer';
 import useLongPress from '../hooks/longPress';
-import { useSpring, animated } from 'react-spring'
+import { useSpring, animated, useTransition } from 'react-spring'
 import { useState, useEffect, useRef } from 'react';
 import { tappableTimerStyle } from '../styles';
-import * as easings from 'd3-ease'
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlay, faPause } from '@fortawesome/free-solid-svg-icons'
+ 
 
 const RESET_TIME = 600;
+
+const StatusIndicator = ({ isPaused }) => {
+  console.log('paused:', isPaused);
+  const playStyleProps = useSpring({ opacity: !isPaused ? 1 : 0 });
+  const pauseStyleProps = useSpring({ opacity: isPaused ?  1 : 0 });
+
+  const transitions = useTransition(isPaused, null, {
+    from: { position: 'absolute', opacity: 0 },
+    enter: { opacity: 0.5 },
+    leave: { opacity: 0 },
+  });
+
+  return <div className="status-indicator">
+    {transitions.map(({ item, key, props }) => 
+    item
+      ? <animated.div key={key}style={props}><FontAwesomeIcon icon={faPause} /></animated.div>
+      : <animated.div key={key}style={props}><FontAwesomeIcon icon={faPlay} /></animated.div>
+    )}
+  </div> 
+};
+
 
 const ProgressIndicator = ({ msLeft, pickedTime, isPaused }) => {
   let totalSeconds = Math.floor(pickedTime / 1000);
@@ -18,7 +42,6 @@ const ProgressIndicator = ({ msLeft, pickedTime, isPaused }) => {
 }
 
 const ResetProgressIndicator = ({ resetBarState, setResetBarState }) => {
-  console.log('newState:', resetBarState);
   const STANDBY = { width: '0%', opacity: 0 };
   const FINISH = { opacity: 0, };
   const MAX = { width: '100%', opacity: 0.8 };
@@ -47,24 +70,42 @@ const TappableTimer = (props) => {
 
   let handlers = {
     onLongPress:  () => { reset(); setResetBarState('FINISH'); },
-    onShortPress: () => { pause(); },
+    onShortPress: () => { console.log('short press!'); pause(); },
     onClickStart: () => { setResetBarState('MAX'); },
     onLongPressGuaranteed: () => {}, // () => { setResetBarState('MAX'); },
     onLongPressCancel: () => { setResetBarState('STANDBY'); }
   };
 
   let pretty = ms => {
-    let seconds = parseInt(ms / 1000);
-    let milliseconds = parseInt((ms % 1000) / 10);
-    return `${seconds}:${milliseconds}`;
+    let minutes = Math.floor(ms / 60000);
+    let seconds = Math.floor((ms % 60000) / 1000);
+
+    let content;
+
+    if (minutes === 0) {
+      content = <div className="time-left">
+        <div className="time-quantity">{seconds}</div> <div className="time-unit">s</div>
+      </div>;
+    } else {
+      content = <span className="time-left">
+        <div className="time-quantity">{minutes}</div> <div className="time-unit">m</div>
+        <div className="time-quantity">{seconds}</div> <div className="time-unit">s</div>
+      </span>;
+    }
+
+    return content;
+
+
+    
   }
 
   return <div className="tappable-timer" {...useLongPress(handlers, RESET_TIME)}>
       <div className="time-left-wrapper">
-        <div className="time-left"> { pretty(msLeft) } </div>
+        { pretty(msLeft) }
       </div>
       <ResetProgressIndicator {...{resetBarState, setResetBarState}}/>
-      <ProgressIndicator {...{msLeft, pickedTime, isPaused}}/>
+      <ProgressIndicator {...{msLeft, pickedTime, isPaused}} />
+      <StatusIndicator {...{isPaused}} />
     { tappableTimerStyle }
     </div>
 }

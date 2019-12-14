@@ -26,9 +26,9 @@ const appStyle = <style jsx="true" global>{`
 
 
 const DATA = [
-  { name: '3s', ms: 3000 },
-  { name: '7s', ms: 7000 },
-  { name: '10s', ms: 10000 },
+  { name: '5s', ms: 5000 },
+  { name: '30s', ms: 30000 },
+  { name: '90s', ms: 90000 },
 ];
 
 
