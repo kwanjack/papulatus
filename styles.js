@@ -29,6 +29,7 @@ export const tappableTimerStyle = <style>{`
   flex-direction: row;
   align-items: baseline;
   vertical-align: text-bottom;
+  
 }
 
 .time-quantity {
@@ -41,12 +42,25 @@ export const tappableTimerStyle = <style>{`
   margin-right: 10px;
 }
 
-.progress-indicator {
-  opacity: 0.3;
+.progress-wrapper {
   position: absolute;
   bottom: 0;
   left: 0;
-  background: red;
+  height: -webkit-calc(100% - 0px);
+}
+.progress-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: #4d8cf4;
+  width: 100vw;
+}
+
+.flashing-progress-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: #4d8cf4;
   width: 100vw;
 }
 
@@ -60,10 +74,14 @@ export const tappableTimerStyle = <style>{`
   color: black;
 }
 
+.reset-text {
+  color: black;
+}
+
 .reset-indicator {
   position: absolute;
   height: 100%;
-  background: red;
+  background: white;
 }
 
 .reset-background {
@@ -74,21 +92,31 @@ export const tappableTimerStyle = <style>{`
   font-size: 15px;
   height: 100%;
   color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
 }
 
 .status-indicator {
-  width: 50px;
-  height: 50px;
   position: absolute;
-  bottom: 20px;
+  bottom: 100px;
   left: 20px;
-  font-size: 50px;
+  font-size: 80px;
   z-index: 30;
 }
 
 
 .status-indicator path{
 
+}
+
+.reset-background path{
+  color: black;
+}
+
+.reset-icon {
+  padding: 5px;
 }
 
 `}</style>;

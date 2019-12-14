@@ -6,6 +6,7 @@ const selectorRowStyle = <style>{`
   background: #2a2b2d;
   display: flex;
   flex-direction: row;
+  align-items: baseline;
 }
 `}</style>;
 
