@@ -1,6 +1,8 @@
 
 import TappableTimer from '../components/TappableTimer';
 import SelectorRow from '../components/SelectorRow';
+import TimerEdit from '../components/TimerEdit';
+
 import { useState } from 'react';
 
 const appStyle = <style jsx="true" global>{`
@@ -33,10 +35,21 @@ const DATA = [
 
 
 const Index = () => {
+
+  let [timers, setTimers] = useState(DATA);
   let [ pickedTimeIdx, setPickedTimeIdx ] = useState(0);
+  let [ mode, setMode ] = useState('EDIT'); // 'TIMER' or 'EDIT'
+  let [ editId, setEditId ] = useState(0);
+
+  if (mode === 'EDIT') {
+    return <div className="app">
+      <TimerEdit {...{ editId, setMode, setTimers }}/>
+      { appStyle }
+    </div>
+  }
 
   return <div className="app">
-      <SelectorRow pickedTimeIdx={pickedTimeIdx} setPickedTimeIdx={setPickedTimeIdx} data={DATA} />
+      <SelectorRow pickedTimeIdx={pickedTimeIdx} setPickedTimeIdx={setPickedTimeIdx} data={timers} {...{setMode, setEditId}}/>
       <TappableTimer pickedTime={DATA[pickedTimeIdx].ms} />
       { appStyle }
     </div>

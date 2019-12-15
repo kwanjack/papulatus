@@ -1,4 +1,11 @@
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEdit } from '@fortawesome/free-solid-svg-icons'
+import useLongPress from '../hooks/longPress';
+
+import { useSpring, animated, useTransition } from 'react-spring';
+import { useState } from 'react';
+
 const selectorRowStyle = <style>{`
 .selector-row {
   width: 100vw;
@@ -20,7 +27,8 @@ const selectableStyle = <style>{`
   align-content: center;
   align-items: center;
   justify-content: center;
-  font-size: 50px;
+  font-size: 40px;
+  position: relative;
 }
 
 .name {
@@ -30,15 +38,101 @@ const selectableStyle = <style>{`
 .selected {
   background: #4d8cf4;
 }
+
+.edit-indicator-container {
+  height: 20px;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  text-align: center;
+  color: black;
+}
+
+.edit-text {
+  color: black;
+}
+
+.edit-indicator {
+  position: absolute;
+  height: 100%;
+  background: white;
+}
+
+.edit-background {
+  background: white;
+  opacity: 0.5;
+  width: 100%;
+  text-align: center;
+  font-size: 15px;
+  height: 100%;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-icon path{
+  color: black;
+}
+
+.edit-icon-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 20px;
+}
 `}</style>;
+
+
+const ResetProgressIndicator = ({ resetBarState, setResetBarState }) => {
+  const STANDBY = { width: '0%', opacity: 0 };
+  const FINISH = { opacity: 0, };
+  const START = {}; 
+  const MAX = { width: '100%', opacity: 0.8 };
+
+  const resetStates = { STANDBY,START,  MAX, FINISH };
+  const resetStyleProps = useSpring(resetStates[resetBarState]);
+  const resetContainerStates =  {
+    STANDBY: { opacity: 0 },
+    START: { opacity: 0.5 },
+    MAX: { opacity: 0.5 },
+    FINISH: { opacity: 0 }
+  };
+
+  const resetContainerStyleProps = useSpring(resetContainerStates[resetBarState]);
+
+  // return <animated.div className="reset-indicator" style={resetStyleProps}></animated.div>;
+  return <div className="edit-indicator-container">
+    <animated.div className="edit-indicator" style={resetStyleProps}></animated.div>
+    <animated.div className="edit-background" style={resetStyleProps}> </animated.div>
+    <animated.div className="edit-icon-container" style={resetContainerStyleProps}>
+      <FontAwesomeIcon className="edit-icon" icon={faEdit} />
+    </animated.div>
+
+  </div>
+}
+
 
 const Selectable = (props) => {
   let currClassName = 'selectable';
+  let [resetBarState, setResetBarState] = useState('STANDBY');
+
+  let { setMode, setEditId } = props;
+  let handlers = {
+    onLongPress:  () => { setEditId(props.idx); setMode('EDIT'); setResetBarState('FINISH'); },
+    onShortPress: () => { props.setPickedTimeIdx(props.idx) },
+    onClickStart: () => { setResetBarState('START'); },
+    onLongPressGuaranteed:  () => { setResetBarState('MAX'); },
+    onLongPressCancel: () => { setResetBarState('STANDBY'); }
+  };
+
   if (props.selected) { currClassName += ' selected'; }
-  return <div {...props} className={currClassName}>
-    <div className="name">
-      {props.name}
-    </div>
+  return <div className={currClassName} {...useLongPress(handlers, 1000, 300)} > 
+    <ResetProgressIndicator {...{resetBarState, setResetBarState}} />
+    <div className="name"> {props.name} </div>
     {selectableStyle}
   </div>
 }
@@ -48,9 +142,11 @@ const SelectorRow = (props) => {
 
   let renderSelectables = (data) => {
     return data.map(({ name, ms }, i) => {
-      return <Selectable selected={pickedTimeIdx === i} key={i} onClick={() => setPickedTimeIdx(i)} name={name} />
+
+      return <Selectable {...props} selected={pickedTimeIdx === i} key={i} idx={i} name={name} />
     });
   };
+
 
   return <div className="selector-row">
       { renderSelectables(data) }

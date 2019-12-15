@@ -38,10 +38,10 @@ export default function useLongPress({
   }, [startLongPress]);
 
   return {
-    onMouseDown: () => { console.log('onMouseDown'); setStartLongPress(true); },
-    onMouseUp: () => { console.log('onMouseUp'); setStartLongPress(false); },
-    onMouseLeave: () => { console.log('onMouseLeave'); setStartLongPress(false); },
-    onTouchStart: () => { console.log('onTouchStart'); setStartLongPress(true); },
-    onTouchEnd: () => { console.log('onTouchEnd'); setStartLongPress(false); },
+    onMouseDown: () => { /*console.log('onMouseDown');*/ setStartLongPress(true); },
+    onMouseUp: () => { /*console.log('onMouseUp'); */ setStartLongPress(false); },
+    onMouseLeave: () => { /*console.log('onMouseLeave'); */ setStartLongPress(false); },
+    onTouchStart: () => { /*console.log('onTouchStart'); */ setStartLongPress(true); },
+    onTouchEnd: () => { /*console.log('onTouchEnd'); */ setStartLongPress(false); },
   };
 }
