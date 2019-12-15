@@ -9,22 +9,33 @@ import { faPlay, faPause, faBell, faUndo } from '@fortawesome/free-solid-svg-ico
  
 const RESET_TIME = 600;
 
-const StatusIndicator = ({ isPaused }) => {
-  const playStyleProps = useSpring({ opacity: !isPaused ? 1 : 0 });
-  const pauseStyleProps = useSpring({ opacity: isPaused ?  1 : 0 });
+const StatusIndicator = ({ msLeft, pickedTime, isPaused }) => {
 
-  const transitions = useTransition(isPaused, null, {
+  let status = 'PLAY';
+  if (pickedTime === msLeft) {
+    status = 'RESET';
+  } else if (msLeft === 0) {
+    status = 'BEEP';
+  } else if (isPaused) {
+    status = 'PAUSE';
+  };
+
+  console.log('msLeft:', msLeft);
+
+  const transitions = useTransition(status, null, {
     from: { position: 'absolute', opacity: 0 },
     enter: { opacity: 0.5 },
     leave: { opacity: 0 },
   });
 
+  let icons = {
+    PLAY:  faPlay,
+    PAUSE:  faPause,
+    RESET:  faUndo,
+    BEEP:  faBell
+  }
   return <div className="status-indicator">
-    {transitions.map(({ item, key, props }) => 
-    item
-      ? <animated.div key={key}style={props}><FontAwesomeIcon icon={faPause} /></animated.div>
-      : <animated.div key={key}style={props}><FontAwesomeIcon icon={faPlay} /></animated.div>
-    )}
+    {transitions.map(({ item, key, props }) => <animated.div key={key} style={props}><FontAwesomeIcon icon={icons[item]} /></animated.div>  )}
   </div> 
 };
 
@@ -157,7 +168,7 @@ const TappableTimer = (props) => {
           : <ProgressIndicator {...{msLeft, pickedTime, isPaused}} />
         }
       </div>
-      <StatusIndicator {...{isPaused}} />
+      <StatusIndicator {...{msLeft, pickedTime, isPaused}} />
     { tappableTimerStyle }
     </div>
 }
