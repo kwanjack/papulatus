@@ -19,7 +19,7 @@ const selectorRowStyle = <style>{`
 
 const selectableStyle = <style>{`
 .selectable {
-  width: 20vh;
+  width: 33.33vw;
   height: 20vh;
   background: #2a2b2d;
   display: flex;
@@ -82,24 +82,40 @@ const selectableStyle = <style>{`
   left: 0;
   width: 100%;
   height: 100%;
-  font-size: 20px;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+.selector-time-unit {
+  font-size: 15px;
+}
+
+.selector-time-quantity {}
+.selector-time-left {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  font-size: 100%;
+}
+
 `}</style>;
 
 
 const ResetProgressIndicator = ({ resetBarState, setResetBarState }) => {
-  const STANDBY = { width: '0%', opacity: 0 };
-  const FINISH = { opacity: 0, };
+  const STANDBY = { width: '0%', opacity: 0.1};
+  const FINISH = { opacity: 0.1, };
   const START = {}; 
   const MAX = { width: '100%', opacity: 0.8 };
 
-  const resetStates = { STANDBY,START,  MAX, FINISH };
+  const resetStates = { STANDBY, START, MAX, FINISH };
   const resetStyleProps = useSpring(resetStates[resetBarState]);
   const resetContainerStates =  {
-    STANDBY: { opacity: 0 },
+    STANDBY: { opacity: 0.1 },
     START: { opacity: 0.5 },
     MAX: { opacity: 0.5 },
-    FINISH: { opacity: 0 }
+    FINISH: { opacity: 0.1 }
   };
 
   const resetContainerStyleProps = useSpring(resetContainerStates[resetBarState]);
@@ -111,7 +127,6 @@ const ResetProgressIndicator = ({ resetBarState, setResetBarState }) => {
     <animated.div className="edit-icon-container" style={resetContainerStyleProps}>
       <FontAwesomeIcon className="edit-icon" icon={faEdit} />
     </animated.div>
-
   </div>
 }
 
@@ -119,6 +134,7 @@ const ResetProgressIndicator = ({ resetBarState, setResetBarState }) => {
 const Selectable = (props) => {
   let currClassName = 'selectable';
   let [resetBarState, setResetBarState] = useState('STANDBY');
+  let { ms } = props;
 
   let { setMode, setEditId } = props;
   let handlers = {
@@ -132,18 +148,27 @@ const Selectable = (props) => {
   if (props.selected) { currClassName += ' selected'; }
   return <div className={currClassName} {...useLongPress(handlers, 1000, 300)} > 
     <ResetProgressIndicator {...{resetBarState, setResetBarState}} />
-    <div className="name"> {props.name} </div>
+    <div className="name"> <TimeDisplay ms={ms}/> </div>
     {selectableStyle}
   </div>
+}
+
+const TimeDisplay = ({ms}) => {
+  let minutes = Math.floor(ms / 60000);
+  let seconds = Math.floor((ms % 60000) / 1000);
+  return <span className="selector-time-left">
+    { minutes > 0 ? <div className="selector-quantity">{minutes}</div>  : null }
+    { minutes > 0 ? <div className="selector-time-unit">m</div> : null }
+    <div className="selector-time-quantity">{seconds}</div> <div className="selector-time-unit">s</div>
+  </span>;
 }
 
 const SelectorRow = (props) => {
   let { setPickedTimeIdx, pickedTimeIdx, data } = props;
 
   let renderSelectables = (data) => {
-    return data.map(({ name, ms }, i) => {
-
-      return <Selectable {...props} selected={pickedTimeIdx === i} key={i} idx={i} name={name} />
+    return data.map((ms, i) => {
+      return <Selectable {...{...props, ms}} selected={pickedTimeIdx === i} key={i} idx={i} />
     });
   };
 

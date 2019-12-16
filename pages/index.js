@@ -27,18 +27,12 @@ const appStyle = <style jsx="true" global>{`
 </style>
 
 
-const DATA = [
-  { name: '5s', ms: 5000 },
-  { name: '30s', ms: 30000 },
-  { name: '90s', ms: 90000 },
-];
-
-
+const DATA = [ 5000, 30000, 90000 ];
 const Index = () => {
 
   let [timers, setTimers] = useState(DATA);
   let [ pickedTimeIdx, setPickedTimeIdx ] = useState(0);
-  let [ mode, setMode ] = useState('EDIT'); // 'TIMER' or 'EDIT'
+  let [ mode, setMode ] = useState('TIMER'); // 'TIMER' or 'EDIT'
   let [ editId, setEditId ] = useState(0);
 
   if (mode === 'EDIT') {
@@ -49,8 +43,8 @@ const Index = () => {
   }
 
   return <div className="app">
-      <SelectorRow pickedTimeIdx={pickedTimeIdx} setPickedTimeIdx={setPickedTimeIdx} data={timers} {...{setMode, setEditId}}/>
-      <TappableTimer pickedTime={DATA[pickedTimeIdx].ms} />
+      <SelectorRow data={timers} {...{pickedTimeIdx, setPickedTimeIdx, setMode, setEditId }}/>
+      <TappableTimer pickedTime={timers[pickedTimeIdx]} />
       { appStyle }
     </div>
   };

@@ -29,13 +29,24 @@ const numpadStyle = <style jsx="true">{`
 
 
 const Numpad = (props) => {
-  let { setInputString, inputString, setMode } = props;
+  let { setInputString, inputString, setMode, editId, setTimers } = props;
 
   const MAX_CHAR = 4;
   let tryToAddToInput = (inputString, char) => {
-    if (inputString.length === MAX_CHAR) { return; }
+    if (inputString.length === MAX_CHAR) { return inputString; }
     return inputString + char;
   };
+
+  let inputStringToMs = (inputString) => {
+    let seconds = parseInt(inputString.slice(-2)) || 0;
+    let minutes = parseInt(inputString.slice(0, -2)) || 0;
+
+    let result = 0;
+    result += seconds * 1000 + minutes * 60000;
+    console.log('inputString:', inputString, result);
+    return result;
+  };
+
   let renderRows = () => {
     let result = [];
     let entries = [];
@@ -44,7 +55,20 @@ const Numpad = (props) => {
     }
     entries.push({ view: <FontAwesomeIcon icon={faAngleLeft}/>, onClick: () => setMode("TIMER") });
     entries.push({ view: '0', onClick: () => setInputString(oldString => tryToAddToInput(oldString, '0')) });
-    entries.push({ view: <FontAwesomeIcon icon={faEdit}/>, onClick: () => {} });  
+    
+    if (inputString.length === 0) {
+      entries.push({ view: '', onClick: () => { }});  
+    } else {
+      entries.push({ view: <FontAwesomeIcon icon={faEdit}/>, onClick: () => {
+        setTimers(oldTimers => {
+          let newTimers = [...oldTimers];
+          newTimers[editId] = inputStringToMs(inputString);
+          return newTimers;
+        });
+        setMode('TIMER');
+      }});  
+    }
+
 
     for (let i = 0; i < 4; i++) {
       let currRow = [];

@@ -7,10 +7,9 @@ import { tappableTimerStyle } from '../styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlay, faPause, faBell, faUndo } from '@fortawesome/free-solid-svg-icons'
  
-const RESET_TIME = 600;
+const RESET_TIME = 1000;
 
 const StatusIndicator = ({ msLeft, pickedTime, isPaused }) => {
-
   let status = 'PLAY';
   if (pickedTime === msLeft) {
     status = 'RESET';
@@ -19,8 +18,6 @@ const StatusIndicator = ({ msLeft, pickedTime, isPaused }) => {
   } else if (isPaused) {
     status = 'PAUSE';
   };
-
-  console.log('msLeft:', msLeft);
 
   const transitions = useTransition(status, null, {
     from: { position: 'absolute', opacity: 0 },
@@ -66,24 +63,43 @@ const FlashingProgressIndicator = ({ msLeft, pickedTime, isPaused }) => {
 
 
 const ResetProgressIndicator = ({ resetBarState, setResetBarState }) => {
-  const STANDBY = { width: '0%', opacity: 0 };
-  const FINISH = { opacity: 0, };
-  const MAX = { width: '100%', opacity: 0.8 };
-
-  const resetStates = { STANDBY, MAX, FINISH };
-  const resetStyleProps = useSpring(resetStates[resetBarState]);
-  const resetContainerStates =  {
-    STANDBY: { opacity: 0 },
-    MAX: { opacity: 0.5 },
-    FINISH: { opacity: 0 }
+  const indicatorStates = {
+    STANDBY: { height: '100%', width: '0%', opacity: 0},
+    START: {},
+    MAX: { height: '100%', width: '100%', opacity: 0.5},
+    FINISH: { height: '100%', width: '0%', opacity: 0 }
   };
 
-  const resetContainerStyleProps = useSpring(resetContainerStates[resetBarState]);
+  const indicatorStyleProps = useSpring(indicatorStates[resetBarState]);
+  const resetContainerStates =  {
+    STANDBY: { opacity: 0.1 },
+    START: { opacity: 0.5 },
+    MAX: { opacity: 1 },
+    FINISH: {  }
+  };
 
-  // return <animated.div className="reset-indicator" style={resetStyleProps}></animated.div>;
+  const backgroundStates = {
+    STANDBY: {
+      to: async (next, cancel) => { await next({ height: '0%', opacity: 0.5, color: 'white'}) },
+      from: {height: '0%', opacity: 0, color: 'white'},
+    },
+    START: {
+      to: async (next, cancel) => { await next({height: '100%', color: 'white'}) },
+      from: {height: '0%', color: 'white'},
+    },
+    MAX: {}, FINISH: {},
+  };
+  
+  const backgroundProps = useSpring(backgroundStates[resetBarState]);
+
+  const resetTextStyleProps = useSpring(resetContainerStates[resetBarState]);
+
+  // return <animated.div className="reset-indicator" style={indicatorStyleProps}></animated.div>;
   return <div className="reset-indicator-container">
-    <animated.div className="reset-indicator" style={resetStyleProps}></animated.div>
-    <animated.div className="reset-background" style={resetContainerStyleProps}>
+    <animated.div className="reset-background" style={backgroundProps}>
+      <animated.div className="reset-indicator" style={indicatorStyleProps}></animated.div>
+    </animated.div>
+    <animated.div className="reset-icon-container" style={resetTextStyleProps}>
       <div className="reset-text"> RESET </div>
       <FontAwesomeIcon className="reset-icon" icon={faUndo} />
     </animated.div>
@@ -135,7 +151,6 @@ const displayTime = (ms, isPaused, pickedTime) => {
   if (ms === 0) { doPauseAnimation = false; }
   if (ms === pickedTime) { doPauseAnimation = false; }
 
-  console.log('doPauseAnimation:', doPauseAnimation);
   if (doPauseAnimation) {
     return <FlashingTimeDisplay {...{ms, isPaused, pickedTime}} />;
   } else {
@@ -151,12 +166,14 @@ const TappableTimer = (props) => {
   let handlers = {
     onLongPress:  () => { reset(); setResetBarState('FINISH'); },
     onShortPress: () => { console.log('short press!'); pause(); },
-    onClickStart: () => { setResetBarState('MAX'); },
-    onLongPressGuaranteed: () => {}, // () => { setResetBarState('MAX'); },
-    onLongPressCancel: () => { setResetBarState('STANDBY'); }
+    onClickStart: () => { setResetBarState('START'); },
+    onLongPressGuaranteed: () => { setResetBarState('MAX'); },
+    onLongPressCancel: () => {
+      setResetBarState('STANDBY');
+    }
   };
 
-  return <div className="tappable-timer" {...useLongPress(handlers, RESET_TIME)}>
+  return <div className="tappable-timer" {...useLongPress(handlers, RESET_TIME, 300)}>
       <div className="time-left-wrapper">
         { displayTime(msLeft, isPaused, pickedTime) }
       </div>

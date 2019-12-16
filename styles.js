@@ -65,7 +65,7 @@ export const tappableTimerStyle = <style>{`
 }
 
 .reset-indicator-container {
-  height: 40px;
+  height: 20px;
   width: 100vw;
   position: absolute;
   top: 0;
@@ -75,7 +75,7 @@ export const tappableTimerStyle = <style>{`
 }
 
 .reset-text {
-  color: black;
+  color: white;
 }
 
 .reset-indicator {
@@ -85,17 +85,28 @@ export const tappableTimerStyle = <style>{`
 }
 
 .reset-background {
-  background: white;
-  opacity: 0.5;
+  position: relative;
+  background: black;
   width: 100%;
+  height: 0%;
   text-align: center;
-  font-size: 15px;
-  height: 100%;
-  color: black;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 15px;
+}
+
+.reset-icon-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
 }
 
 .status-indicator {
@@ -111,8 +122,8 @@ export const tappableTimerStyle = <style>{`
 
 }
 
-.reset-background path{
-  color: black;
+.reset-icon-container path{
+  color: white;
 }
 
 .reset-icon {

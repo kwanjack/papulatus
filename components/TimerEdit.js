@@ -16,7 +16,7 @@ const SelectorRow = (props) => {
 
   return <div className="EDITOR">
     <EditedTimeDisplay {...{inputString, setInputString}}/>
-    <Numpad {...{setMode, inputString, setInputString}}/>
+    <Numpad {...{setMode, editId, inputString, setInputString, setTimers}}/>
   </div>;
 }
 
