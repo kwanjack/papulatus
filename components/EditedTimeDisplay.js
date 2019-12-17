@@ -3,9 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBackspace } from '@fortawesome/free-solid-svg-icons'
 import { useSpring, animated, useTransition } from 'react-spring'
 
-
 const editedTimeStyle = <style jsx="true">{`
-
 .edited-time-display {
   height: 20vh;
   width: 100vw;
@@ -56,10 +54,7 @@ const editedTimeStyle = <style jsx="true">{`
 `}</style>
 
 const EditedTimeDisplay = (props) => {
-
   let { inputString, setInputString } = props;
-  console.log('inputString:', inputString);
-  console.log('inputString.length:', inputString.length);
   let slots = ['0','0','0','0'];
   let active = [false, false, false, false];
 

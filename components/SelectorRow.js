@@ -1,4 +1,3 @@
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import useLongPress from '../hooks/longPress';
@@ -6,102 +5,7 @@ import useLongPress from '../hooks/longPress';
 import { useSpring, animated, useTransition } from 'react-spring';
 import { useState } from 'react';
 
-const selectorRowStyle = <style>{`
-.selector-row {
-  width: 100vw;
-  height: 20vh;
-  background: #2a2b2d;
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-}
-`}</style>;
-
-const selectableStyle = <style>{`
-.selectable {
-  width: 33.33vw;
-  height: 20vh;
-  background: #2a2b2d;
-  display: flex;
-  flex-direction: column;
-  align-content: center;
-  align-items: center;
-  justify-content: center;
-  font-size: 40px;
-  position: relative;
-}
-
-.name {
-
-}
-
-.selected {
-  background: #4d8cf4;
-}
-
-.edit-indicator-container {
-  height: 20px;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  text-align: center;
-  color: black;
-}
-
-.edit-text {
-  color: black;
-}
-
-.edit-indicator {
-  position: absolute;
-  height: 100%;
-  background: white;
-}
-
-.edit-background {
-  background: white;
-  opacity: 0.5;
-  width: 100%;
-  text-align: center;
-  font-size: 15px;
-  height: 100%;
-  color: black;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.edit-icon path{
-  color: black;
-}
-
-.edit-icon-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  font-size: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.selector-time-unit {
-  font-size: 15px;
-}
-
-.selector-time-quantity {}
-.selector-time-left {
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-  font-size: 100%;
-}
-
-`}</style>;
-
+import { selectorRowStyle, selectableStyle } from '../styles';
 
 const ResetProgressIndicator = ({ resetBarState, setResetBarState }) => {
   const STANDBY = { width: '0%', opacity: 0.1};
