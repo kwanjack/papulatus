@@ -23,6 +23,10 @@ const editedTimeStyle = <style jsx="true">{`
   justify-content: center;
 }
 
+.backspace:active {
+  opacity: 0.5;
+}
+
 .backspace path {
 }
 
@@ -45,6 +49,10 @@ const editedTimeStyle = <style jsx="true">{`
   padding: 0 5px;
 }
 
+.slot {
+  color: grey;
+}
+
 `}</style>
 
 const EditedTimeDisplay = (props) => {
@@ -63,11 +71,11 @@ const EditedTimeDisplay = (props) => {
 
     return <div className="input-display-container">
       <div className="input-display">
-        <div>{slots[0]}</div>
-        <div>{slots[1]}</div>
+        <div className={active[0] ? "active-slot" : "slot"}>{slots[0]}</div>
+        <div className={active[1] ? "active-slot" : "slot"}>{slots[1]}</div>
         <div className="unit">m</div>
-        <div>{slots[2]}</div>
-        <div>{slots[3]}</div>
+        <div className={active[2] ? "active-slot" : "slot"}>{slots[2]}</div>
+        <div className={active[3] ? "active-slot" : "slot"}>{slots[3]}</div>
         <div className="unit">s</div>
       </div>
     </div>;

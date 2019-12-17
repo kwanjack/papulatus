@@ -117,10 +117,19 @@ export const tappableTimerStyle = <style>{`
   z-index: 30;
 }
 
-
-.status-indicator path{
-
+.big-status-indicator {
+  align-self: center;
+  width: 100%;
+  height: 100%;
+  font-size: 300px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+
+.status-indicator path{}
 
 .reset-icon-container path{
   color: white;

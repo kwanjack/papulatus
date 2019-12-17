@@ -36,6 +36,27 @@ const StatusIndicator = ({ msLeft, pickedTime, isPaused }) => {
   </div> 
 };
 
+const BigStatusIndicator = ({ msLeft, pickedTime, isPaused }) => {
+  let status = 'PLAY';
+  if (pickedTime === msLeft) {
+    status = 'RESET';
+  } else if (msLeft === 0) {
+    status = 'BEEP';
+  } else if (isPaused) {
+    status = 'PAUSE';
+  };
+
+  const transitions = useTransition(status, status => status, {
+    from: { position: 'absolute', opacity: 0 },
+    enter: [{ opacity: 0.1 }, { opacity: 0} ],
+    leave: { opacity: 0 },
+  });
+  let icons = { PLAY:  faPlay, PAUSE:  faPause, RESET:  faUndo, BEEP:  faBell };
+  return <div className="big-status-indicator">
+    {transitions.map(({ item, key, props }) => <animated.div key={key} style={props}><FontAwesomeIcon icon={icons[item]} /></animated.div>  )}
+  </div> 
+};
+
 const ProgressIndicator = ({ msLeft, pickedTime, isPaused }) => {
   let totalSeconds = Math.floor(pickedTime / 1000);
   let secondsLeft = Math.floor(msLeft / 1000);
@@ -159,13 +180,20 @@ const displayTime = (ms, isPaused, pickedTime) => {
 };
 
 const TappableTimer = (props) => {
-  let { pickedTime } = props;
-  let { msLeft, start, pause, reset, isPaused } = useTimer(pickedTime);
+  let { pickedTime, onReset, onTimeLimitReached } = props;
+  let { pickedTime: picked, msLeft, start, pause, reset, isPaused } = useTimer(pickedTime, onTimeLimitReached, onReset);
   let [resetBarState, setResetBarState] = useState('STANDBY');
 
   let handlers = {
     onLongPress:  () => { reset(); setResetBarState('FINISH'); },
-    onShortPress: () => { console.log('short press!'); pause(); },
+    onShortPress: () => {
+      if (msLeft === 0) {
+        setResetBarState('START');
+        reset();
+      } else {
+        pause();
+      }
+    },
     onClickStart: () => { setResetBarState('START'); },
     onLongPressGuaranteed: () => { setResetBarState('MAX'); },
     onLongPressCancel: () => {
@@ -173,9 +201,9 @@ const TappableTimer = (props) => {
     }
   };
 
-  return <div className="tappable-timer" {...useLongPress(handlers, RESET_TIME, 300)}>
+  return <div className="tappable-timer" {...useLongPress(handlers, RESET_TIME, 300)} style={{ display: props.mode === 'EDIT' ? "none" : "flex" }}>
       <div className="time-left-wrapper">
-        { displayTime(msLeft, isPaused, pickedTime) }
+        { displayTime(msLeft, isPaused, picked) }
       </div>
       <ResetProgressIndicator {...{resetBarState, setResetBarState}}/>
 
@@ -186,6 +214,8 @@ const TappableTimer = (props) => {
         }
       </div>
       <StatusIndicator {...{msLeft, pickedTime, isPaused}} />
+      <BigStatusIndicator {...{msLeft, pickedTime:picked, isPaused}} />
+
     { tappableTimerStyle }
     </div>
 }

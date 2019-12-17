@@ -173,7 +173,7 @@ const SelectorRow = (props) => {
   };
 
 
-  return <div className="selector-row">
+  return <div className="selector-row" style={{ display: props.mode === 'EDIT' ? "none" : "flex"  }}>
       { renderSelectables(data) }
     { selectorRowStyle }
   </div>;

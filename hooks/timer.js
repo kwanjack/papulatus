@@ -1,16 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
 
-function useTimer(ms) {
+function useTimer(ms, onTimeLimitReached, onReset) {
   let [ expireAt, setExpireAt ] = useState();
   let intervalRef = useRef();
-  let [ msLeft, setMsLeft ] = useState(ms);
   let [lastPaused, setLastPaused] = useState(ms);
   let [isPaused, setIsPaused] = useState(true);
+  let [ timeData, setTimeData ] = useState({ picked: ms, left: ms });
 
   useEffect(() => {
     clearInterval(intervalRef.current);
     intervalRef.current = undefined;
-    setMsLeft(ms);
+    setTimeData({ picked: ms, left: ms})
     setLastPaused(ms);
   }, [ms])
 
@@ -21,17 +21,33 @@ function useTimer(ms) {
     if (!intervalRef.current) {
       setIsPaused(false);
       setExpireAt(Date.now() + remainMs);
-      setMsLeft(remainMs);
+      setTimeData({ picked: ms, left: remainMs });
+      // intervalRef.current = setInterval(() => {
+      //   setMsLeft(prevMsLeft => {
+      //     if (prevMsLeft <= 0) {
+      //       clearInterval(intervalRef.current);
+      //       intervalRef.current = undefined;
+      //       setLastPaused(undefined);
+      //       setIsPaused(true);
+      //       onTimeLimitReached();
+      //       return prevMsLeft;
+      //     } else {
+      //       return Math.max(newExpire - Date.now(), 0);
+      //     }
+      //   });
+      // }, 50);
+
       intervalRef.current = setInterval(() => {
-        setMsLeft(prevMsLeft => {
-          if (prevMsLeft <= 0) {
+        setTimeData(prevTimeData => {
+          if (prevTimeData.left <= 0) {
             clearInterval(intervalRef.current);
             intervalRef.current = undefined;
             setLastPaused(undefined);
             setIsPaused(true);
-            return prevMsLeft;
+            onTimeLimitReached();
+            return prevTimeData;
           } else {
-            return Math.max(newExpire - Date.now(), 0);
+            return { ...prevTimeData, left: Math.max(newExpire - Date.now(), 0) };
           }
         });
       }, 50);
@@ -39,22 +55,22 @@ function useTimer(ms) {
   };
 
   let pause = () => {
-    if (msLeft === 0) { return; }
+    if (timeData.left === 0) { return; }
     if (intervalRef.current) {
       setIsPaused(true);
       clearInterval(intervalRef.current);
-      setLastPaused(msLeft);
+      setLastPaused(timeData.left);
       intervalRef.current = undefined;
     } else {
-      console.log('unpausing:', msLeft);
       unpause(lastPaused);
     }
   }
   
   let reset = () => {
-    setMsLeft(ms);
+    setTimeData({ picked: ms, left: ms });
     setLastPaused(ms);
     setIsPaused(true);
+    onReset();
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = undefined;
@@ -62,7 +78,8 @@ function useTimer(ms) {
   }
 
   return {
-    msLeft,
+    pickedTime: timeData.picked,
+    msLeft: timeData.left,
     start,
     pause,
     reset,

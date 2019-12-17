@@ -3,7 +3,11 @@ import TappableTimer from '../components/TappableTimer';
 import SelectorRow from '../components/SelectorRow';
 import TimerEdit from '../components/TimerEdit';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+import {Howl, Howler} from 'howler';
+import Head from 'next/head'
+
 
 const appStyle = <style jsx="true" global>{`
 * {
@@ -23,28 +27,53 @@ const appStyle = <style jsx="true" global>{`
   width: 100vw;
   color: white;
 }
+
 `}  
 </style>
 
 
-const DATA = [ 5000, 30000, 90000 ];
-const Index = () => {
+const useAudio = url => {
+  const [audio] = useState(new Howl({ src: url, loop: true, }));
+  const [playing, setPlaying] = useState(false);
+  useEffect(() => { playing ? audio.play() : audio.pause(); }, [playing]);
+  return [playing, () => setPlaying(true), () => setPlaying(false)];
+};
 
-  let [timers, setTimers] = useState(DATA);
+const DEFAULT_DATA = [ 5000, 30000, 90000 ];
+const Index = () => {
+  let [ timers, setTimers ] = useState(DEFAULT_DATA);
   let [ pickedTimeIdx, setPickedTimeIdx ] = useState(0);
   let [ mode, setMode ] = useState('TIMER'); // 'TIMER' or 'EDIT'
   let [ editId, setEditId ] = useState(0);
+  let [ playing, ring, stop] = useAudio('/audio/alarm.mp3');
 
-  if (mode === 'EDIT') {
-    return <div className="app">
-      <TimerEdit {...{ editId, setMode, setTimers }}/>
-      { appStyle }
-    </div>
+  useEffect(() => {
+    let userTimers = JSON.parse(localStorage.getItem('userTimers'));
+    if (userTimers) {
+      setTimers(userTimers);
+    } else {
+      localStorage.setItem('userTimers', JSON.stringify(DEFAULT_DATA));
+      setTimers(DEFAULT_DATA);
+    }
+  }, []);
+
+  let setTimersWrapper = (f) => {
+    setTimers(f);
+    let newVal = f(timers);
+    localStorage.setItem('userTimers', JSON.stringify(newVal));
   }
 
+  let header = <Head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charSet="utf-8" />
+    <title>Timer</title>
+  </Head>;
+
   return <div className="app">
-      <SelectorRow data={timers} {...{pickedTimeIdx, setPickedTimeIdx, setMode, setEditId }}/>
-      <TappableTimer pickedTime={timers[pickedTimeIdx]} />
+      { header }
+      <TimerEdit {...{ mode, editId, setMode, setTimers: setTimersWrapper }}/>
+      <SelectorRow data={timers} {...{pickedTimeIdx, setPickedTimeIdx, setMode, setEditId, mode }}/>
+      <TappableTimer {...{onReset: stop, onTimeLimitReached: ring, mode }} pickedTime={timers[pickedTimeIdx]} />
       { appStyle }
     </div>
   };

@@ -16,9 +16,11 @@
     "@fortawesome/free-solid-svg-icons": "^5.12.0",
     "@fortawesome/react-fontawesome": "^0.1.8",
     "d3-ease": "^1.0.6",
+    "howler": "^2.1.2",
     "next": "^9.1.5",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
+    "react-howler": "^3.7.4",
     "react-spring": "^9.0.0-beta.34",
     "react-transition-group": "^4.3.0"
   }

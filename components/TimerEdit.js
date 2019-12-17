@@ -5,18 +5,24 @@ import { useSpring, animated, useTransition } from 'react-spring'
 import { useState } from 'react';
 
 const timerEditStyle = <style jsx="true">{`
-
+  .editor {
+    display: flex;
+    flex-direction: column;
+  }
 `}  
 </style>
 
 
 const SelectorRow = (props) => {
-  let { editId, setMode, setTimers } = props;
+  let { editId, setMode, setTimers, mode } = props;
   let [inputString, setInputString] = useState('');
 
-  return <div className="EDITOR">
+  let className = (mode === 'EDIT') ? 'editor current' : 'editor';
+
+  return <div className={className} style={{ display: props.mode === 'EDIT' ? "flex" : "none" }}>
     <EditedTimeDisplay {...{inputString, setInputString}}/>
     <Numpad {...{setMode, editId, inputString, setInputString, setTimers}}/>
+    {timerEditStyle}
   </div>;
 }
 
