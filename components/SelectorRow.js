@@ -43,7 +43,7 @@ const Selectable = (props) => {
   let { setMode, setEditId } = props;
   let handlers = {
     onLongPress:  () => { setEditId(props.idx); setMode('EDIT'); setResetBarState('FINISH'); },
-    onShortPress: () => { props.setPickedTimeIdx(props.idx) },
+    onShortPress: () => { props.onReset(); props.setPickedTimeIdx(props.idx) },
     onClickStart: () => { setResetBarState('START'); },
     onLongPressGuaranteed:  () => { setResetBarState('MAX'); },
     onLongPressCancel: () => { setResetBarState('STANDBY'); }

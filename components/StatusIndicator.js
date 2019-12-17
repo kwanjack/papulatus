@@ -19,8 +19,8 @@ export const StatusIndicator = ({ msLeft, pickedTime, isPaused }) => {
     });
   
     let icons = {
-      PLAY:  faPlay,
-      PAUSE:  faPause,
+      PLAY:  faPause,
+      PAUSE:  faPlay,
       RESET:  faUndo,
       BEEP:  faBell
     }

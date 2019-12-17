@@ -72,7 +72,7 @@ const Index = () => {
   return <div className="app">
       { header }
       <TimerEdit {...{ mode, editId, setMode, setTimers: setTimersWrapper }}/>
-      <SelectorRow data={timers} {...{pickedTimeIdx, setPickedTimeIdx, setMode, setEditId, mode }}/>
+      <SelectorRow data={timers} {...{onReset: stop, pickedTimeIdx, setPickedTimeIdx, setMode, setEditId, mode }}/>
       <TappableTimer {...{onReset: stop, onTimeLimitReached: ring, mode }} pickedTime={timers[pickedTimeIdx]} />
       { appStyle }
     </div>
