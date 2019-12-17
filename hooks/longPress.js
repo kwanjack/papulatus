@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
+import { isMobile } from 'react-device-detect';
+
 
 export default function useLongPress({
     onLongPress,
@@ -37,11 +39,16 @@ export default function useLongPress({
     };
   }, [startLongPress]);
 
-  return {
-    onMouseDown: () => { /*console.log('onMouseDown');*/ setStartLongPress(true); },
-    onMouseUp: () => { /*console.log('onMouseUp'); */ setStartLongPress(false); },
-    onMouseLeave: () => { /*console.log('onMouseLeave'); */ setStartLongPress(false); },
-    onTouchStart: () => { /*console.log('onTouchStart'); */ setStartLongPress(true); },
-    onTouchEnd: () => { /*console.log('onTouchEnd'); */ setStartLongPress(false); },
-  };
+  if (isMobile) {
+    return {
+      onTouchStart: () => { /*console.log('onTouchStart'); */ setStartLongPress(true); },
+      onTouchEnd: () => { /*console.log('onTouchEnd'); */ setStartLongPress(false); },
+    }
+  } else {
+    return {
+      onMouseDown: () => { /*console.log('onMouseDown');*/ setStartLongPress(true); },
+      onMouseUp: () => { /*console.log('onMouseUp'); */ setStartLongPress(false); },
+      onMouseLeave: () => { /*console.log('onMouseLeave'); */ setStartLongPress(false); },
+    }
+  }
 }

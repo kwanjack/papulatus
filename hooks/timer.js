@@ -22,20 +22,6 @@ function useTimer(ms, onTimeLimitReached, onReset) {
       setIsPaused(false);
       setExpireAt(Date.now() + remainMs);
       setTimeData({ picked: ms, left: remainMs });
-      // intervalRef.current = setInterval(() => {
-      //   setMsLeft(prevMsLeft => {
-      //     if (prevMsLeft <= 0) {
-      //       clearInterval(intervalRef.current);
-      //       intervalRef.current = undefined;
-      //       setLastPaused(undefined);
-      //       setIsPaused(true);
-      //       onTimeLimitReached();
-      //       return prevMsLeft;
-      //     } else {
-      //       return Math.max(newExpire - Date.now(), 0);
-      //     }
-      //   });
-      // }, 50);
 
       intervalRef.current = setInterval(() => {
         setTimeData(prevTimeData => {

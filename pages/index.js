@@ -45,7 +45,7 @@ const Index = () => {
   let [ pickedTimeIdx, setPickedTimeIdx ] = useState(0);
   let [ mode, setMode ] = useState('TIMER'); // 'TIMER' or 'EDIT'
   let [ editId, setEditId ] = useState(0);
-  let [ playing, ring, stop] = useAudio('/audio/alarm.mp3');
+  let [ playing, ring, stop] = useAudio('https://kwanjack.github.io/timer/alarm.mp3');
 
   useEffect(() => {
     let userTimers = JSON.parse(localStorage.getItem('userTimers'));
